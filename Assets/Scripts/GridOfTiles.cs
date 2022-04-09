@@ -11,6 +11,7 @@ public class GridOfTiles : MonoBehaviour
     public float spaceBetweenTiles = 1.0f;
     public Tile[,] grid;
 
+    private PlayerController _playerRef;
     private string[] _poolOfCodes;
     private GameObject _tilePrefab;
     private int _currentRow = 0;
@@ -18,8 +19,12 @@ public class GridOfTiles : MonoBehaviour
     private bool _isRowActive = true;
     void Start()
     {
+        _playerRef = FindObjectOfType<PlayerController>();
+        if (_playerRef.difficulty == PlayerController.GameDifficulty.Hard) size = 6;
         transform.position += new Vector3(-size * 0.5f, size * 0.5f);
         _tilePrefab = Resources.Load<GameObject>("Prefabs/Tile");
+        
+        
         InitializePoolOfCodes();
         InitializeGrid();
     }
@@ -66,6 +71,42 @@ public class GridOfTiles : MonoBehaviour
         }
     }
 
+    public void SwitchBetweenRowAndColumn()
+    {
+        if (_isRowActive)
+        {
+            ChangeCurrentRowActiveState(false);
+            ChangeCurrentColumnActiveState(true);
+        }
+        else
+        {
+            ChangeCurrentColumnActiveState(false);
+            ChangeCurrentRowActiveState(true);
+        }
+    }
+
+    public string MoveCurrentCodeToBuffer()
+    {
+        var code = grid[_currentColumn, _currentRow].Code;
+        grid[_currentColumn, _currentRow].Code = "";
+        return code;
+    }
+
+    public void GetCodeBackFromBuffer(string code)
+    {
+        grid[_currentColumn, _currentRow].Code = code;
+    }
+
+    public bool CurrentIsInBuffer()
+    {
+        return grid[_currentColumn, _currentRow].Code == "";
+    }
+
+    public string[] GetPoolOfCodes()
+    {
+        return _poolOfCodes;
+    }
+    
     private void InitializeGrid()
     {
         grid = new Tile[size, size];
