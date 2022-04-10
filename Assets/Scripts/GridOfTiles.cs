@@ -20,7 +20,6 @@ public class GridOfTiles : MonoBehaviour
     void Start()
     {
         _playerRef = FindObjectOfType<PlayerController>();
-        if (_playerRef.difficulty == PlayerController.GameDifficulty.Hard) size = 6;
         transform.position += new Vector3(-size * 0.5f, size * 0.5f);
         _tilePrefab = Resources.Load<GameObject>("Prefabs/Tile");
         
@@ -109,6 +108,7 @@ public class GridOfTiles : MonoBehaviour
     
     private void InitializeGrid()
     {
+        size = _playerRef.difficulty == PlayerController.GameDifficulty.Hard ? 6 : 5;
         grid = new Tile[size, size];
         
         for (int y = 0; y < size; y++)
@@ -144,4 +144,26 @@ public class GridOfTiles : MonoBehaviour
             _poolOfCodes[i] = code;
         }
     }
+
+    private void DeleteGrid()
+    {
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                Destroy(grid[x, y].gameObject);
+            }
+        }
+    }
+
+    public void ResetGrid()
+    {
+        _currentColumn = 0;
+        _currentRow = 0;
+        DeleteGrid();
+        InitializePoolOfCodes();
+        InitializeGrid();
+    }
+    
+    
 }

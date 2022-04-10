@@ -34,6 +34,7 @@ public class HackingBuffer : MonoBehaviour
 
     private void InitializeBuffer()
     {
+        _currentBuffer = 0;
         if (_playerRef.difficulty == PlayerController.GameDifficulty.Hard)
         {
             // 5 slots
@@ -61,5 +62,29 @@ public class HackingBuffer : MonoBehaviour
             _bufferArray[i] = temp.GetComponent<Tile>();
             _bufferArray[i].Code = "";
         }
+    }
+
+    public Tile[] GetBufferArray()
+    {
+        return _bufferArray;
+    }
+
+    private void DeleteBuffer()
+    {
+        foreach (var buffer in _bufferArray)
+        {
+            Destroy(buffer.gameObject);
+        }
+    }
+
+    public void ResetBuffer()
+    {
+        DeleteBuffer();
+        InitializeBuffer();
+    }
+
+    public bool IsBufferFull()
+    {
+        return _currentBuffer == _bufferArray.Length;
     }
 }

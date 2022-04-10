@@ -23,10 +23,12 @@ public class HackingTimer : MonoBehaviour
     private bool _timerDone = false;
     private bool _timerStarted = false;
     private float _timerHelper;
+    private HackingPlayerSkill _playerSkillRef;
     void Start()
     {
+        _playerSkillRef = FindObjectOfType<HackingPlayerSkill>();
         _text = GetComponent<TextMeshProUGUI>();
-        Timer = initialValue;
+        InitializeTimer();
     }
 
     // Update is called once per frame
@@ -61,5 +63,18 @@ public class HackingTimer : MonoBehaviour
     public void ChangeInitialTimer(int value)
     {
         Timer = initialValue + value;
+    }
+
+    private void InitializeTimer()
+    {
+        Timer = initialValue + _playerSkillRef.GetPlayerSkillValueToAdd();
+    }
+
+    public void ResetTimer()
+    {
+        _timerDone = false;
+        _timerHelper = 0.0f;
+        _timerStarted = false;
+        InitializeTimer();
     }
 }

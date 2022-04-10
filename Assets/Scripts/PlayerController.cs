@@ -68,5 +68,69 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         HandleInput();
+        if (_bufferRef.IsBufferFull())
+        {
+            if (IsSequenceInBuffer())
+            {
+                Debug.Log("Win");
+            }
+            else
+            {
+                Debug.Log("Loses");
+            }
+        }
+    }
+
+    private bool IsSequenceInBuffer()
+    {
+        var sequence = _sequenceRef.GetSequenceArray();
+        var buffer = _bufferRef.GetBufferArray();
+        for (int i = 0; i < buffer.Length; i++)
+        {
+            if (buffer[i].Code == sequence[0].Code)
+            {
+                for (int k = 1; k <= 2; k++)
+                {
+                    if (i+k >= buffer.Length)
+                    {
+                        return false;
+                    }
+                    if (buffer[i+k].Code != sequence[k].Code)
+                    {
+                        break;
+                    }
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public bool GameStarted() => _gameStarted;
+
+    private void ResetGame()
+    {
+        _gameStarted = false;
+        _gridRef.ResetGrid();
+        _sequenceRef.ResetSequence();
+        _bufferRef.ResetBuffer();
+        _timerRef.ResetTimer();
+    }
+
+    public void EasyDifficulty()
+    {
+        difficulty = GameDifficulty.Easy;
+        ResetGame();
+    }
+    public void NormalDifficulty()
+    {
+        difficulty = GameDifficulty.Normal;
+        ResetGame();
+    }
+    public void HardDifficulty()
+    {
+        difficulty = GameDifficulty.Hard;
+        ResetGame();
     }
 }

@@ -106,6 +106,24 @@ public class HackingSequence : MonoBehaviour
                 break;
         }
     }
+
+    public Tile[] GetSequenceArray()
+    {
+        return _sequenceArray;
+    }
+    private void DeleteSequence()
+    {
+        foreach (var sequence in _sequenceArray)
+        {
+            Destroy(sequence.gameObject);
+        }
+    }
+
+    public void ResetSequence()
+    {
+        DeleteSequence();
+        InitializeSequence();
+    }
     
     
 }
