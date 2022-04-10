@@ -17,12 +17,15 @@ public class PlayerController : MonoBehaviour
     private GridOfTiles _gridRef;
     private HackingBuffer _bufferRef;
     private HackingSequence _sequenceRef;
+    private HackingTimer _timerRef;
+    private bool _gameStarted = false;
 
     private void Start()
     {
         _gridRef = FindObjectOfType<GridOfTiles>();
         _bufferRef = FindObjectOfType<HackingBuffer>();
         _sequenceRef = FindObjectOfType<HackingSequence>();
+        _timerRef = FindObjectOfType<HackingTimer>();
     }
 
     void HandleInput()
@@ -45,6 +48,11 @@ public class PlayerController : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            if (!_gameStarted)
+            {
+                _gameStarted = true;
+                _timerRef.StartTimer();
+            }
             if (_gridRef.CurrentIsInBuffer())
             {
                 //Get code back from buffer,
