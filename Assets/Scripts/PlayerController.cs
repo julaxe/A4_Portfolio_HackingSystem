@@ -13,12 +13,15 @@ public class PlayerController : MonoBehaviour
     }
 
     public GameDifficulty difficulty = GameDifficulty.Easy;
+    public GameObject WinningScreen;
+    public GameObject LosingScreen;
     
     private GridOfTiles _gridRef;
     private HackingBuffer _bufferRef;
     private HackingSequence _sequenceRef;
     private HackingTimer _timerRef;
     private bool _gameStarted = false;
+    private bool _gameFinished = false;
 
     private void Start()
     {
@@ -67,17 +70,27 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
+        if (_gameFinished) return;
         HandleInput();
         if (_bufferRef.IsBufferFull())
         {
             if (IsSequenceInBuffer())
             {
-                Debug.Log("Win");
+                WinningScreen.SetActive(true);
             }
             else
             {
-                Debug.Log("Loses");
+                LosingScreen.SetActive(true);
             }
+            _timerRef.PauseTimer();
+            _gameFinished = true;
+        }
+
+        if (_timerRef.TimerDone())
+        {
+            LosingScreen.SetActive(true);
+            _timerRef.PauseTimer();
+            _gameFinished = true;
         }
     }
 
@@ -89,6 +102,7 @@ public class PlayerController : MonoBehaviour
         {
             if (buffer[i].Code == sequence[0].Code)
             {
+                bool founded = true;
                 for (int k = 1; k <= 2; k++)
                 {
                     if (i+k >= buffer.Length)
@@ -97,10 +111,12 @@ public class PlayerController : MonoBehaviour
                     }
                     if (buffer[i+k].Code != sequence[k].Code)
                     {
+                        founded = false;
                         break;
                     }
                 }
-                return true;
+
+                if (founded) return true;
             }
         }
 
@@ -118,6 +134,14 @@ public class PlayerController : MonoBehaviour
         _timerRef.ResetTimer();
     }
 
+
+    public void RestartButton()
+    {
+        ResetGame();
+        WinningScreen.SetActive(false);
+        LosingScreen.SetActive(false);
+        _gameFinished = false;
+    }
     public void EasyDifficulty()
     {
         difficulty = GameDifficulty.Easy;

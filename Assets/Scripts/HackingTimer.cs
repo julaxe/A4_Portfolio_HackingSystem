@@ -60,6 +60,11 @@ public class HackingTimer : MonoBehaviour
         _timerStarted = true;
     }
 
+    public void PauseTimer()
+    {
+        _timerStarted = false;
+    }
+
     public void ChangeInitialTimer(int value)
     {
         Timer = initialValue + value;
